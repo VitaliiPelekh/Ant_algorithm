@@ -28,7 +28,6 @@ def generate_cities_and_distances(N):
     return cities, distances
 
 
-
 def plot(cities, path):
     # Get the list of pairs from the path
     path_pairs = path[0]
@@ -46,6 +45,12 @@ def plot(cities, path):
     # Create a scatter plot of all cities
     plt.scatter([city.x for city in cities], [city.y for city in cities])
 
+    # Make the starting point larger
+    plt.scatter([cities[path_indices[0]].x], [cities[path_indices[0]].y], color='blue', s=100)
+
+    # Make the ending point larger
+    plt.scatter([cities[path_indices[-1]].x], [cities[path_indices[-1]].y], color='red', s=100)
+
     # Plot the path
     plt.plot(x_coordinates, y_coordinates, 'r')
     plt.show()
@@ -55,7 +60,7 @@ class AntColony:
     def __init__(self, distances, n_ants, n_best, n_iterations, decay, alpha, beta):
         """
         Args:
-            distances (2D numpy.array): Square matrix of distances. Diagonal is assumed to be np.inf.
+            distances (2D numpy.array): Square matrix of distances. Diagonal is assumed to be zero.
             n_ants (int): Number of ants running per iteration
             n_best (int): Number of best ants who deposit pheromone
             n_iterations (int): Number of iterations
@@ -150,7 +155,7 @@ df = pd.DataFrame(distances)
 df.to_csv('distances.csv', index=False)
 
 distances = pd.read_csv('distances.csv').values
-ant_colony = AntColony(distances, n_ants=10, n_best=2, n_iterations=100, decay=0.95, alpha=1, beta=2)
+ant_colony = AntColony(distances, n_ants=10, n_best=2, n_iterations=100, decay=0.5, alpha=5, beta=10)
 shortest_path = ant_colony.run()
 print("\nРезультуючий найкоротший шлях: {}".format(int(shortest_path[1])))
 plot(cities, shortest_path)
